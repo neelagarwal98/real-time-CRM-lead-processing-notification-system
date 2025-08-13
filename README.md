@@ -52,9 +52,8 @@ Do not enable S3 event notifications on this bucket; the delay is implemented vi
 
 Navigate to the **Amazon SQS** console and create a new queue. Select the *Standard* queue type and call it something like lead-processing-delay-queue. Under **Delivery delay** set the *Delay Seconds* to 600 (10 minutes); this causes any message sent to the queue without an explicit per‑message delay to become visible only after 600 seconds.
 
-Open the queue and copy its **URL**. You will need this value as SQS\_QUEUE\_URL in the environment of the first Lambda. The queue details page looks like this:
+Open the queue and copy its **URL**. You will need this value as SQS\_QUEUE\_URL in the environment of the first Lambda. 
 
-![][image2]
 
 ### 3 – Deploy Lambda \#1: webhook‑ingest
 
@@ -82,15 +81,11 @@ The webhook‑ingest function performs the following operations:
 
 * Returns a 200 HTTP response to API Gateway confirming storage and queuing.
 
-The **Function overview** in the AWS console should show an API Gateway trigger attached to the Lambda, similar to this diagram:
-
-![][image3]
+The **Function overview** in the AWS console should show an API Gateway trigger attached to the Lambda.
 
 ### 4 – Configure API Gateway
 
-Create a new **HTTP API** in Amazon API Gateway (not a REST API). Under **Routes**, add a POST route such as /webhook/lead. Select your webhook‑ingest Lambda function as the integration target. Deploy the API to a stage (e.g. prod) to obtain an invoke URL. Your routes page should resemble this:
-
-![][image4]
+Create a new **HTTP API** in Amazon API Gateway (not a REST API). Under **Routes**, add a POST route such as /webhook/lead. Select your webhook‑ingest Lambda function as the integration target. Deploy the API to a stage (e.g. prod) to obtain an invoke URL.
 
 Once deployed, copy the fully qualified endpoint URL (e.g. https://\<api-id\>.execute-api.us-east-1.amazonaws.com/prod/webhook/lead). Provide this URL to your Close CRM administrator when creating the webhook subscription. The Close webhook should be configured to trigger on **lead creation** events and send the full payload as JSON.
 
@@ -110,10 +105,8 @@ Once deployed, copy the fully qualified endpoint URL (e.g. https://\<api-id\>.ex
 
 7. **Configure the handler** to lambda2(enrich-alert).lambda\_handler.
 
-8. **Add an SQS trigger**. In the Lambda console choose **Add trigger** → **SQS** and select the delay queue created earlier. Leave the batch size at 1 for simplicity. The function’s overview should show the queue as the trigger:
-
-![][image5]
-
+8. **Add an SQS trigger**. In the Lambda console choose **Add trigger** → **SQS** and select the delay queue created earlier. Leave the batch size at 1 for simplicity.
+   
 The enrich‑alert function performs the following:
 
 * Reads messages from the SQS queue and parses lead\_id and s3\_key.
@@ -130,9 +123,7 @@ The enrich‑alert function performs the following:
 
 If you haven’t already, create a **Slack App** in your workspace and enable the *Incoming Webhooks* feature. Add a new webhook for the channel where you want to receive lead alerts (e.g. \#lead-alerts). Copy the generated webhook URL and set it as the SLACK\_WEBHOOK environment variable for the enrich-alert Lambda.
 
-The Slack messages sent by the system follow the format specified in the project requirements. A typical alert looks like this:
-
-![][image6]
+The Slack messages sent by the system follow the format specified in the project requirements.
 
 ### 7 – Configure the Close CRM webhook
 
