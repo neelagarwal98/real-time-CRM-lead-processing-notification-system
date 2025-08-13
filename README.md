@@ -8,7 +8,7 @@ This project implements a small, serverless pipeline on AWS that ingests lead cr
 
 ## Architecture at a Glance
 
-![][architecture.jpg]
+![architecture](architecture.jpg)
 
 At a high level the pipeline consists of the following components:
 
